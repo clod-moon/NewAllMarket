@@ -54,12 +54,14 @@ func Init() {
 	getAllTicker()
 }
 
-func errHandler(data []byte) {
+func errHandler(data []byte) []byte {
 	buffer.Write(data)
 	msg, err := ParseGzip(buffer.Bytes(), false)
 	if err == nil {
-		fmt.Println("!!!!!!", string(msg[:]))
+		//fmt.Println("!!!!!!", string(msg[:]))
+		return msg
 	}
+	return nil
 }
 
 func GzipDecode(in []byte) ([]byte, error) {
@@ -77,9 +79,14 @@ func ParseGzip(data []byte, handleErr bool) ([]byte, error) {
 	if err != nil {
 		//with error
 		if handleErr {
-			errHandler(data)
+			msg := errHandler(data)
+			if msg != nil{
+				return msg,nil
+			}
+		}else{
+			return nil, err
 		}
-		return nil, err
+
 	} else {
 		defer r.Close()
 		undatas, err := ioutil.ReadAll(r)
