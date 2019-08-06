@@ -58,7 +58,7 @@ func errHandler(data []byte) []byte {
 	buffer.Write(data)
 	msg, err := ParseGzip(buffer.Bytes(), false)
 	if err == nil {
-		fmt.Println("!!!!!!", string(msg[:]))
+		//fmt.Println("!!!!!!", string(msg[:]))
 		return msg
 	}
 	return nil
@@ -78,7 +78,6 @@ func ParseGzip(data []byte, handleErr bool) ([]byte, error) {
 	r, err := gzip.NewReader(b)
 	if err != nil {
 		//with error
-		fmt.Println("22222")
 		if handleErr {
 			msg := errHandler(data)
 			if msg != nil{
@@ -89,7 +88,6 @@ func ParseGzip(data []byte, handleErr bool) ([]byte, error) {
 		}
 
 	} else {
-		fmt.Println("111111")
 		defer r.Close()
 		undatas, err := ioutil.ReadAll(r)
 		if err != nil {
