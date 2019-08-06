@@ -72,7 +72,7 @@ func GetHuobiMarket(wg *sync.WaitGroup) {
 
 		resp, err := simplejson.NewJson(unzipmsg)
 		if err != nil {
-			//logger.Debug(err.Error())
+			logger.Debug(err.Error())
 			continue
 		}
 

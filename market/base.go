@@ -54,12 +54,14 @@ func Init() {
 	getAllTicker()
 }
 
-func errHandler(data []byte) {
+func errHandler(data []byte) []byte {
 	buffer.Write(data)
 	msg, err := ParseGzip(buffer.Bytes(), false)
 	if err == nil {
 		fmt.Println("!!!!!!", string(msg[:]))
+		return msg
 	}
+	return nil
 }
 
 func GzipDecode(in []byte) ([]byte, error) {
@@ -76,11 +78,18 @@ func ParseGzip(data []byte, handleErr bool) ([]byte, error) {
 	r, err := gzip.NewReader(b)
 	if err != nil {
 		//with error
+		fmt.Println("22222")
 		if handleErr {
-			errHandler(data)
+			msg := errHandler(data)
+			if msg != nil{
+				return msg,nil
+			}
+		}else{
+			return nil, err
 		}
-		return nil, err
+
 	} else {
+		fmt.Println("111111")
 		defer r.Close()
 		undatas, err := ioutil.ReadAll(r)
 		if err != nil {
@@ -94,6 +103,7 @@ func ParseGzip(data []byte, handleErr bool) ([]byte, error) {
 			return undatas, nil
 		}
 	}
+	return nil,nil
 }
 
 func send(message []byte, ws *websocket.Conn) {
