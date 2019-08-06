@@ -79,7 +79,7 @@ End:
 func GetMarketHandler(wg *sync.WaitGroup) {
 	defer wg.Done()
 	http.HandleFunc("/get_market", MarketServer)
-	err := http.ListenAndServe(":12345", nil)
+	err := http.ListenAndServe(":9233", nil)
 	if err != nil {
 		panic("ListenAndServe: " + err.Error())
 	}
