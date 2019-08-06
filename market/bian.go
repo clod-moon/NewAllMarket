@@ -46,12 +46,16 @@ func GetBianMarket(wg *sync.WaitGroup) {
 		return
 	}
 
-	var msg = make([]byte, 512000)
+	var msg = make([]byte, 512000*2)
 
 	for {
 		m, err := ws.Read(msg)
 		if err != nil {
 			logger.Error(err.Error())
+			ws = BianReconnet(srcMarket.WsUrl)
+			if ws == nil{
+				logger.Error("bian reconnect failed:",srcMarket.WsUrl)
+			}
 			continue
 		}
 
@@ -74,4 +78,13 @@ func GetBianMarket(wg *sync.WaitGroup) {
 			modelBian.Update()
 		}
 	}
+}
+
+func BianReconnet(url string) *websocket.Conn{
+	ws, err := websocket.Dial(url, "", Origin)
+	if err != nil {
+		logger.Error(err.Error())
+		return nil
+	}
+	return ws
 }

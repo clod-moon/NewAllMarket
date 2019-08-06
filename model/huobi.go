@@ -8,7 +8,7 @@ import (
 
 type Huobi struct {
 	Id           int       `gorm:"primary_key;type:int(11);AUTO_INCREMENT`
-	Ticker       string    `json:"ticker"`
+	Ticker       string    `json:"tick"`
 	DealBiId     int       `gorm:"type:int;not null"`
 	StandardBiId int       `gorm:"type:int;not null"`
 	Amount       float64   `json:"amount" gorm:"type:float;not null"`
@@ -46,13 +46,15 @@ func QueryHuobiMarket(tick string) (list []Huobi,b bool) {
 	if tick == "all"{
 		DBHd.Find(&list)
 
-		for i, v := range list {
-			if v.Open == 0.0{
-				list = append(list[:i],list[i:]...)
+		i := 0
+		for ;i<len(list) ;{
+			if list[i].Open <= 0.0001 && list[i].Open > -0.0001{
+				list = append(list[:i],list[i+1:]...)
 				continue
 			}
-			ticker := DMap[v.DealBiId] + "-" + SMap[v.StandardBiId]
-			v.Ticker = ticker
+			ticker := DMap[list[i].DealBiId] + "-" + SMap[list[i].StandardBiId]
+			list[i].Ticker = ticker
+			i++
 		}
 	}else {
 
@@ -66,7 +68,13 @@ func QueryHuobiMarket(tick string) (list []Huobi,b bool) {
 		dealBiId := DealBiMap[ticks[0]]
 		standardBiId := StandardBiMap[ticks[1]]
 
-		DBHd.Find(&list,"where deal_bi_id = ? and standard_bi_id = ?",dealBiId,standardBiId)
+		DBHd.Find(&list," deal_bi_id = ? and standard_bi_id = ?",dealBiId,standardBiId)
+
+		if len(list) > 0{
+			list[0].Ticker = tick
+		}else{
+			return list,false
+		}
 	}
 
 	return list,true

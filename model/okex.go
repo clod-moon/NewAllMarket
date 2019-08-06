@@ -8,7 +8,7 @@ import (
 
 type Okex struct {
 	Id           int       `gorm:"primary_key;type:int(11);AUTO_INCREMENT`
-	Ticker       string    `json:"instrument_id"`
+	Ticker       string    `json:"tick"`
 	DealBiId     int       `gorm:"type:int;not null"`
 	StandardBiId int       `gorm:"type:int;not null"`
 	Amount       float64   `json:"amount" gorm:"type:float;not null"`
