@@ -26,13 +26,13 @@ func main() {
 	go httpserver.GetMarketHandler(&Wg)
 
 	Wg.Add(1)
-	go market.GetHuobiMarket()
+	go market.GetHuobiMarket(&Wg)
 
 	//wg.Add(1)
 	//go market.GetOkexMarket()
 
-	//Wg.Add(1)
-	//go market.GetBianMarket()
+	Wg.Add(1)
+	go market.GetBianMarket(&Wg)
 
 	Wg.Wait()
 	return

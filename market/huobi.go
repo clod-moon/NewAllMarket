@@ -68,7 +68,7 @@ func GetHuobiMarket(wg *sync.WaitGroup) {
 
 		unzipmsg, _ := ParseGzip(newmsg, true)
 
-		fmt.Printf("Receive[UNZIP]: [%d:%d] %s\n", m, len(unzipmsg), unzipmsg[:])
+		//fmt.Printf("Receive[UNZIP]: [%d:%d] %s\n", m, len(unzipmsg), unzipmsg[:])
 
 		resp, err := simplejson.NewJson(unzipmsg)
 		if err != nil {

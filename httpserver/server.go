@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"NewAllMarket/model"
 	"sync"
+	"github.com/wonderivan/logger"
 )
 
 var messageChan = make(chan []byte, 1024)
@@ -23,10 +24,10 @@ type Resp struct {
 }
 
 type Market struct {
-	Name       string    `json:"name"`
-	Close      float64   `json:"Close"`
-	Open       float64   `json:"Open"`
-	Rose       float64   `json:"Roes"`
+	Name       string    `json:"tick"`
+	Close      float64   `json:"close"`
+	Open       float64   `json:"open"`
+	Rose       float64   `json:"rose"`
 	UpdateTime time.Time `json:"update_time"`
 	CreateTime time.Time `json:"create_time"`
 }
@@ -45,26 +46,33 @@ func MarketServer(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(requestBoyd, &request)
 
 	if request.Platform == "huobi" {
-
 		list , b :=model.QueryHuobiMarket(request.Tick)
 		if b == false{
-			return
+			resp.Code = 20001
+			resp.Msg = "can not find tick"
+			logger.Error("can not find tick:",request.Tick)
+			goto End
 		}
 		strList ,_ := json.Marshal(list)
 		json.Unmarshal(strList,&resp.Data)
 
 	} else if request.Platform == "bian" {
-
+		list , b :=model.QueryBianMarket(request.Tick)
+		if b == false{
+			resp.Code = 20001
+			resp.Msg = "can not find tick"
+			logger.Error("can not find tick:",request.Tick)
+			goto End
+		}
+		strList ,_ := json.Marshal(list)
+		json.Unmarshal(strList,&resp.Data)
 	}
-	//fmt.Println(DB.Find(&Market{}).Value)
-
 
 	resp.Code = 200
 
 	resp.Msg = "success"
-
+End:
 	ret, _ := json.Marshal(resp)
-
 	w.Write(ret)
 }
 
