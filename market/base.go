@@ -4,7 +4,7 @@ import (
 	"github.com/bitly/go-simplejson"
 	"strings"
 	"fmt"
-	"AllMarket/model"
+	"NewAllMarket/model"
 	"github.com/wonderivan/logger"
 	"bytes"
 	"encoding/binary"

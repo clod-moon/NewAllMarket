@@ -2,7 +2,7 @@ package market
 
 import (
 	"fmt"
-	"AllMarket/model"
+	"NewAllMarket/model"
 	"regexp"
 	"github.com/wonderivan/logger"
 	"encoding/json"
@@ -10,6 +10,7 @@ import (
 	"golang.org/x/net/websocket"
 	"github.com/bitly/go-simplejson"
 	"time"
+	"sync"
 )
 
 var (
@@ -33,8 +34,8 @@ func HuoBiPing(ws *websocket.Conn,pong int64){
 	//time.Now().UnixNano() / int64(time.Millisecond))
 }
 
-func GetHuobiMarket() {
-
+func GetHuobiMarket(wg *sync.WaitGroup) {
+	defer wg.Done()
 	srcMarket,ok:=model.SrcMarketMap["huobi"]
 	if !ok{
 		logger.Error("can not find huobi")

@@ -1,7 +1,7 @@
 package market
 
 import (
-	"AllMarket/model"
+	"NewAllMarket/model"
 	//"regexp"
 	"github.com/wonderivan/logger"
 	"encoding/json"
@@ -9,6 +9,7 @@ import (
 	"time"
 	"fmt"
 	"golang.org/x/net/websocket"
+	"sync"
 )
 
 var (
@@ -42,7 +43,9 @@ func OkexPing(ws *websocket.Conn,pong int64){
 	//time.Now().UnixNano() / int64(time.Millisecond))
 }
 
-func GetOkexMarket() {
+func GetOkexMarket(wg *sync.WaitGroup) {
+
+	defer wg.Done()
 
 	srcMarket,ok:=model.SrcMarketMap["okex"]
 	if !ok{
@@ -60,13 +63,13 @@ func GetOkexMarket() {
 
 	logger.Error("OkexTickerList:",len(OkexTickerList))
 
-	//for _, ticker := range OkexTickerList {
-	ticker := "ETH-USD"
+	for _, ticker := range OkexTickerList {
+
 		go func(ticker string){
 			message := []byte(fmt.Sprintf(srcMarket.Template,ticker))
 			send(message, ws)
 		}(ticker)
-	//}
+	}
 	var msg = make([]byte, 512000)
 
 	for {

@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 //
 
@@ -30,6 +32,18 @@ type Okex struct {
 //		OkexMap[ticker] = v
 //	}
 //}
+
+func GetOkex()  {
+	var list []Okex
+	DBHd.Find(&list)
+
+	for _,v := range list{
+		ticker := DMap[v.DealBiId]+"-"+SMap[v.StandardBiId]
+		//ticker =strings.ToLower(ticker)
+		OkexMap[ticker] = v
+	}
+	//fmt.Println("--------》HuobiMap：",len(HuobiMap))
+}
 
 func (o *Okex) Update() {
 	o.UpdateTime = time.Now()

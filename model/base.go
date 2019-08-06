@@ -54,6 +54,9 @@ func Init() {
 
 	GetHuoBi()
 
+	GetOkex()
+
+	GetBian()
 	logger.Debug("model Init")
 	//FillSrcMarket()
 	//FillHuobi()
